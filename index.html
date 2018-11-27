@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>高级数据库-Neo4j数据插入时间</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="高级数据库-Neo4j数据插入时间">
+    <meta name="author" content="yzs">
+    <style>
+        html{
+            font-size:1px;
+            line-height: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="visual-chart" id="runtime" style="width: 100%;height: 500px;"></div>
+</body>
+</html>
+<script src="public/js/jquery.min.js"></script>
+<script src="public/js/echarts.js"></script>
+<script>
+    function showGraph(data) {
+        var chartDom = document.getElementById('runtime');
+        var myChart = echarts.getInstanceByDom(chartDom) || echarts.init(chartDom);
+        myChart.showLoading();
+        console.log(data);
+        var option = {
+            title:{
+                text: '高级数据库-Neo4j数据插入时间',
+                left: 'center'
+            },
+            toolbox: {
+                feature: {
+                    dataZoom: {
+                        yAxisIndex: false
+                    },
+                    saveAsImage: {
+                        pixelRatio: 2
+                    }
+                }
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            grid: {
+                bottom: 90
+            },
+            dataZoom: [{
+                type: 'inside'
+            }, {
+                type: 'slider'
+            }],
+            xAxis: {
+                data: data.index,
+                silent: false,
+                splitLine: {
+                    show: false
+                },
+                splitArea: {
+                    show: false
+                }
+            },
+            yAxis: {
+                splitArea: {
+                    show: false
+                }
+            },
+            series: [{
+                type: 'bar',
+                data: data.runtime,
+                // Set `large` for large data amount
+                large: true
+            }]
+        };
+        myChart.hideLoading();
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+        //用于使chart自适应高度和宽度
+        window.onresize = myChart.resize();
+    }
+    
+    $.getJSON('data/runtime.json', function (data) {
+        console.log(data);
+        showGraph(data);
+    });
+</script>
